@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.activity.demo.dao.IEmployeeDao">
+    <select id="selectEmployeeById" parameterType="int" resultType="Employee">
+        select * from tb_employee where id=#{id}
+    </select>
+    
+    <resultMap type="Employee" id="resultEmployeeList">
+    	<id column="id" property="id" />
+    	<result column="name" property="name" />
+    	<result column="password" property="password" />
+    	<result column="email" property="email" />
+    	<result column="role" property="role" />
+    	<association property="manager" javaType="Employee">
+            <id column="bid" property="id" />
+	    	<result column="bname" property="name" />
+	    	<result column="bpassword" property="password" />
+	    	<result column="bemail" property="email" />
+	    	<result column="brole" property="role" />            
+        </association>
+    </resultMap>
+    
+    <select id="selectEmployeeListByName" parameterType="string" resultMap="resultEmployeeList">
+    	SELECT a.*,b.id bid,b.name bname,b.password bpassword,b.email bemail,b.role brole FROM `tb_employee` a LEFT OUTER JOIN tb_employee b ON a.emp_id=b.id WHERE a.name=#{name}
+    </select>
+    
+    
+    <!-- 查询List时，配置的是resultMap，不是resultType -->
+    <!-- <select id="selectUsers" parameterType="string" resultMap="resultListUser">
+    	select * from user where name like #{name}
+    </select> -->
+    
+    <!-- 配置查询的List集合 -->
+    <!-- <resultMap type="User" id="resultListUser">
+    	<id column="id" property="id" />
+    	<result column="name" property="name" />
+    	<result column="password" property="password" />
+    	<result column="age" property="age" />
+    	<result column="sex" property="sex" />
+    </resultMap>  -->
+    
+    <!-- 增加数据 -->
+    <!-- <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+    	insert into user (name,password,age,sex) values (#{name},#{password},#{age},#{sex})
+    </insert> -->
+    
+    <!-- 修改数据 -->
+    <!-- <update id="updateUser" parameterType="User">
+    	update user set age=#{age} where id=#{id}
+    </update> -->
+    
+    <!-- 删除数据 -->
+    <!-- <delete id="deleteUser" parameterType="int">
+    	delete from user where id=#{id}
+    </delete> -->
+    
+    <!-- 联合查询 -->
+    <!-- <select id="selectUserArticles" parameterType="int" resultMap="resultUserArticleList">
+    	select user.id,user.name,user.password,user.age,user.sex,article.id aid,article.title,article.content
+    	 from user,article where user.id=article.userid and user.id=#{id}
+    </select> -->
+    
+    <!-- <resultMap type="Article" id="resultUserArticleList">
+    	<id column="aid" property="id" />
+    	<result column="title" property="title" />
+    	<result column="content" property="content" />
+    	<association property="user" javaType="User" resultMap="resultListUser" />
+    </resultMap> -->
+</mapper>
