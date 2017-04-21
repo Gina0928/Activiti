@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.activity.demo.dao.ILeaveBillDao">
+    
+    <resultMap type="LeaveBill" id="resultLeaveBillList">
+    	<id column="id" property="id" />
+    	<result column="days" property="days" />
+    	<result column="content" property="content" />
+    	<result column="leaveDate" property="leaveDate" />
+    	<result column="remark" property="remark" />
+    	<result column="state" property="state" />
+    	<association property="user" javaType="Employee">
+            <id column="aid" property="id" />
+	    	<result column="name" property="name" />
+	    	<result column="password" property="password" />
+	    	<result column="email" property="email" />
+	    	<result column="role" property="role" />            
+        </association>  
+    </resultMap>
+    
+    <select id="selectLeaveBillListByEmpId" parameterType="int" resultMap="resultLeaveBillList">
+    	select * from tb_leavebill where emp_id=#{empId}
+    </select>
+    
+    <insert id="saveLeaveBill" parameterType="LeaveBill" useGeneratedKeys="true" keyProperty="id">
+    	insert into tb_leavebill (days,content,remark,emp_id,state) values (#{days},#{content},#{remark},#{user.id},#{state})
+    </insert>
+    
+    <select id="findLeaveBillById" parameterType="int" resultMap="resultLeaveBillList">
+    	select a.id aid,a.name,a.password,a.email,a.role,b.* from tb_employee a,tb_leavebill b where b.emp_id=a.id and b.id=#{id}
+    </select>
+    
+    <update id="updateLeaveBill" parameterType="LeaveBill">
+    	update tb_leavebill set days=#{days},content=#{content},remark=#{remark},state=#{state} where id=#{id}
+    </update>
+    
+    <delete id="deleteLeaveBillById" parameterType="int">
+    	delete from tb_leavebill where id=#{id}
+    </delete>
+    
+    <select id="selectSequenceId" parameterType="string" resultType="java.lang.String">
+        select getnextval(#{seqname})
+    </select>
+    
+    <!-- 查询List时，配置的是resultMap，不是resultType -->
+    <!-- <select id="selectUsers" parameterType="string" resultMap="resultListUser">
+    	select * from user where name like #{name}
+    </select> -->
+    
+    <!-- 配置查询的List集合 -->
+    <!-- <resultMap type="User" id="resultListUser">
+    	<id column="id" property="id" />
+    	<result column="name" property="name" />
+    	<result column="password" property="password" />
+    	<result column="age" property="age" />
+    	<result column="sex" property="sex" />
+    </resultMap>  -->
+    
+    <!-- 增加数据 -->
+    <!-- <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+    	insert into user (name,password,age,sex) values (#{name},#{password},#{age},#{sex})
+    </insert> -->
+    
+    <!-- 修改数据 -->
+    <!-- <update id="updateUser" parameterType="User">
+    	update user set age=#{age} where id=#{id}
+    </update> -->
+    
+    <!-- 删除数据 -->
+    <!-- <delete id="deleteUser" parameterType="int">
+    	delete from user where id=#{id}
+    </delete> -->
+    
+    <!-- 联合查询 -->
+    <!-- <select id="selectUserArticles" parameterType="int" resultMap="resultUserArticleList">
+    	select user.id,user.name,user.password,user.age,user.sex,article.id aid,article.title,article.content
+    	 from user,article where user.id=article.userid and user.id=#{id}
+    </select> -->
+    
+    <!-- <resultMap type="Article" id="resultUserArticleList">
+    	<id column="aid" property="id" />
+    	<result column="title" property="title" />
+    	<result column="content" property="content" />
+    	<association property="user" javaType="User" resultMap="resultListUser" />
+    </resultMap> -->
+</mapper>
